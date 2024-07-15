@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Usuarios</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Registro de Usuarios</h1>
+    <form id="userForm">
+      <div class="form-group">
+        <label for="name">Nombre</label>
+        <input type="text" class="form-control" id="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Registrar</button>
+    </form>
+    <h2>Usuarios Registrados</h2>
+    <ul id="userList" class="list-group"></ul>
+    <button id="clearUsers" class="btn btn-danger mt-3">Borrar Todos los Usuarios</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const userForm = document.getElementById('userForm');
+      const userList = document.getElementById('userList');
+      const clearUsers = document.getElementById('clearUsers');
+
+      // Función para cargar usuarios desde localStorage
+      const loadUsers = () => {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        userList.innerHTML = '';
+        users.forEach((user, index) => {
+          const li = document.createElement('li');
+          li.textContent = `${user.name} - ${user.email}`;
+          li.classList.add('list-group-item');
+          userList.appendChild(li);
+        });
+      };
+
+      // Cargar usuarios al cargar la página
+      loadUsers();
+
+      // Función para guardar usuarios en localStorage
+      const saveUsers = (users) => {
+        localStorage.setItem('users', JSON.stringify(users));
+        loadUsers();
+      };
+
+      // Manejar el envío del formulario
+      userForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        users.push({ name, email });
+        saveUsers(users);
+
+        userForm.reset();
+      });
+
+      // Manejar el borrado de todos los usuarios
+      clearUsers.addEventListener('click', () => {
+        localStorage.removeItem('users');
+        loadUsers();
+      });
+    });
+  </script>
+</body>
+</html>
